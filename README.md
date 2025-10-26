@@ -5,7 +5,7 @@
 Canvas para criação do modelo e código HTML, CSS e JAVASCRIPT
 
 ## Ações Futuras
-Davi, Raiane e Willian - Ficarão com o protótipo
+Davi, Raiane e Willian - Ficarão com o protótipo <br>
 Mioto, Santos e Willian - Banco de Dados
 
 ## Integrantes
