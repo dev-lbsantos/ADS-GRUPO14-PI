@@ -1,0 +1,1494 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Cadastros Acadêmicos</title>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .success-message {
+            animation: slideDown 0.4s ease-out;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .icon-bounce {
+            transition: transform 0.3s ease;
+        }
+        .card-hover:hover .icon-bounce {
+            transform: scale(1.1) rotate(5deg);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        }
+        .gradient-blue {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        }
+        .gradient-green {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        }
+        .gradient-purple {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        }
+        .gradient-orange {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        }
+        .gradient-red {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        }
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .input-focus {
+            transition: all 0.3s ease;
+        }
+        .input-focus:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+        .shape:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { top: 20%; right: 10%; animation-delay: 2s; }
+        .shape:nth-child(3) { bottom: 20%; left: 20%; animation-delay: 4s; }
+        .shape:nth-child(4) { bottom: 10%; right: 20%; animation-delay: 1s; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+</head>
+<body class="h-full font-sans relative overflow-x-hidden"><div class="floating-shapes">
+    <svg class="shape w-32 h-32" viewbox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="url(#gradient1)" /> <defs>
+        <lineargradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#1e3a8a" />
+          <stop offset="100%" style="stop-color:#1e40af" />
+        </lineargradient>
+      </defs>
+    </svg>
+    <svg class="shape w-24 h-24" viewbox="0 0 100 100"><polygon points="50,10 90,90 10,90" fill="url(#gradient2)" /> <defs>
+        <lineargradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#1e40af" />
+          <stop offset="100%" style="stop-color:#312e81" />
+        </lineargradient>
+      </defs>
+    </svg>
+    <svg class="shape w-28 h-28" viewbox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="15" fill="url(#gradient3)" /> <defs>
+        <lineargradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#1d4ed8" />
+          <stop offset="100%" style="stop-color:#1e3a8a" />
+        </lineargradient>
+      </defs>
+    </svg>
+    <svg class="shape w-20 h-20" viewbox="0 0 100 100"><path d="M50,10 L90,50 L50,90 L10,50 Z" fill="url(#gradient4)" /> <defs>
+        <lineargradient id="gradient4" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#1e40af" />
+          <stop offset="100%" style="stop-color:#0f172a" />
+        </lineargradient>
+      </defs>
+    </svg>
+  </div>
+  <div class="min-h-full flex flex-col relative z-10"><header class="bg-white/90 backdrop-filter backdrop-blur-lg border-b border-gray-200 shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-6">
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h1 class="ml-4 text-3xl font-bold text-gray-800 drop-shadow-sm">Sistema de Cadastros</h1>
+          </div><button id="homeBtn" class="bg-blue-900 hover:bg-blue-800 text-white font-medium px-6 py-3 rounded-full transition-all duration-300 hover:scale-105 shadow-lg"> ← Voltar ao Menu </button>
+        </div>
+      </div>
+    </header><div id="successMessage" class="hidden gradient-green text-white px-6 py-4 text-center success-message shadow-lg">
+      <div class="flex items-center justify-center">
+        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg><span id="successText" class="font-semibold text-lg"></span>
+      </div>
+    </div><main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><div id="mainMenu" class="fade-in">
+        <div class="text-center mb-16">
+          <h2 class="text-5xl font-bold text-gray-800 mb-6 drop-shadow-sm">Bem-vindo ao Sistema</h2>
+          <p class="text-2xl text-gray-600 drop-shadow-sm">Selecione o tipo de cadastro que deseja realizar</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto"><div class="bg-white backdrop-filter backdrop-blur-lg rounded-3xl shadow-2xl card-hover cursor-pointer border border-gray-200 group p-8" onclick="showForm('professores')">
+            <div class="w-20 h-20 bg-blue-900 rounded-3xl flex items-center justify-center mb-6 mx-auto icon-bounce shadow-xl">
+              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 text-center mb-3">Professores</h3>
+            <p class="text-gray-600 text-center text-lg leading-relaxed">Cadastro de professores e educadores</p>
+          </div><div class="bg-white backdrop-filter backdrop-blur-lg rounded-3xl shadow-2xl card-hover cursor-pointer border border-gray-200 group p-8" onclick="showForm('alunos')">
+            <div class="w-20 h-20 bg-blue-900 rounded-3xl flex items-center justify-center mb-6 mx-auto icon-bounce shadow-xl">
+              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 text-center mb-3">Alunos</h3>
+            <p class="text-gray-600 text-center text-lg leading-relaxed">Cadastro de alunos e estudantes</p>
+          </div><div class="bg-white backdrop-filter backdrop-blur-lg rounded-3xl shadow-2xl card-hover cursor-pointer border border-gray-200 group p-8" onclick="showForm('fornecedores')">
+            <div class="w-20 h-20 bg-blue-900 rounded-3xl flex items-center justify-center mb-6 mx-auto icon-bounce shadow-xl">
+              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 text-center mb-3">Fornecedores</h3>
+            <p class="text-gray-600 text-center text-lg leading-relaxed">Cadastro de fornecedores e parceiros</p>
+          </div><div class="bg-white backdrop-filter backdrop-blur-lg rounded-3xl shadow-2xl card-hover cursor-pointer border border-gray-200 group p-8" onclick="showDashboard()">
+            <div class="w-20 h-20 bg-blue-900 rounded-3xl flex items-center justify-center mb-6 mx-auto icon-bounce shadow-xl">
+              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 text-center mb-3">Dashboard Admin</h3>
+            <p class="text-gray-600 text-center text-lg leading-relaxed">Gerenciar todos os cadastros</p>
+          </div>
+        </div>
+      </div><div id="dashboardAdmin" class="hidden fade-in">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-blue-900 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <h2 class="text-4xl font-bold text-gray-800 mb-2 drop-shadow-sm">Dashboard Administrativo</h2>
+            <p class="text-gray-600 text-lg drop-shadow-sm">Gerencie todos os cadastros do sistema</p>
+          </div>
+          
+          <div class="mb-6 border-b border-gray-300">
+            <nav class="flex -mb-px space-x-8" aria-label="Tabs">
+              <button id="tab-gerenciar" onclick="switchTab('gerenciar')" class="tab-button group inline-flex items-center py-4 px-1 border-b-2 font-medium text-lg border-blue-900 text-blue-900">
+                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Gerenciar Cadastros</span>
+              </button>
+              <button id="tab-pre-cadastro" onclick="switchTab('pre-cadastro')" class="tab-button group inline-flex items-center py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                 <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.102 1.101m.758 4.899l-5.656 5.656"></path></svg>
+                <span>Pré-cadastro via Link</span>
+              </button>
+            </nav>
+          </div>
+          <div id="panel-gerenciar" class="tab-panel">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div class="bg-white backdrop-filter backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-200">
+                <div class="flex items-center">
+                  <div class="w-12 h-12 bg-blue-900 rounded-xl flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                  </div>
+                  <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Professores</p>
+                    <p class="text-2xl font-bold text-gray-900" id="count-professores">0</p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-white backdrop-filter backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-200">
+                <div class="flex items-center">
+                  <div class="w-12 h-12 bg-blue-900 rounded-xl flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
+                    </svg>
+                  </div>
+                  <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Alunos</p>
+                    <p class="text-2xl font-bold text-gray-900" id="count-alunos">0</p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-white backdrop-filter backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-200">
+                <div class="flex items-center">
+                  <div class="w-12 h-12 bg-blue-900 rounded-xl flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                  </div>
+                  <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Fornecedores</p>
+                    <p class="text-2xl font-bold text-gray-900" id="count-fornecedores">0</p>
+                  </div>
+                </div>
+              </div>
+            </div><div class="bg-white backdrop-filter backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-200 mb-6">
+              <div class="flex flex-wrap gap-4 items-center">
+                <div><label for="filter-tipo" class="block text-sm font-medium text-gray-700 mb-1">Tipo</label> <select id="filter-tipo" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"> <option value="">Todos</option> <option value="professor">Professores</option> <option value="aluno">Alunos</option> <option value="fornecedor">Fornecedores</option> </select>
+                </div>
+                <div><label for="filter-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label> <select id="filter-status" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"> <option value="">Todos</option> <option value="pendente">Pendente</option> <option value="aprovado">Aprovado</option> <option value="atualizar">Solicitar Atualização</option> </select>
+                </div>
+                <div class="flex-1"><label for="filter-search" class="block text-sm font-medium text-gray-700 mb-1">Buscar</label> <input type="text" id="filter-search" placeholder="Nome ou email..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                </div>
+                <div class="flex gap-2 mt-6"><button onclick="applyFilters()" class="px-6 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 hover:scale-105 transition-all duration-300 font-medium"> Filtrar </button> <button onclick="clearFilters()" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-300 font-medium"> Limpar </button>
+                </div>
+              </div>
+            </div><div class="bg-white backdrop-filter backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+              <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Cadastros Registrados</h3>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cadastros-list" class="bg-white divide-y divide-gray-200"></tbody>
+                </table>
+              </div>
+              <div id="empty-state" class="hidden p-12 text-center">
+                <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <p class="text-gray-500 text-lg">Nenhum cadastro encontrado</p>
+                <p class="text-gray-400">Os cadastros aparecerão aqui conforme forem sendo realizados</p>
+              </div>
+            </div>
+          </div>
+          <div id="panel-pre-cadastro" class="tab-panel hidden">
+            <div class="bg-white backdrop-filter backdrop-blur-lg rounded-2xl p-8 shadow-xl border border-gray-200 max-w-2xl mx-auto">
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Gerar Link de Pré-Cadastro</h3>
+                <p class="text-gray-600 mb-6">Insira os dados básicos para gerar um link de pré-cadastro e enviá-lo por e-mail.</p>
+                
+                <form id="formPreCadastro" onsubmit="enviarLinkPreCadastro(event)">
+                    <div class="space-y-6">
+                        <div>
+                            <label for="pre-nome" class="block text-sm font-medium text-gray-700 mb-2">Nome Completo</label>
+                            <input type="text" id="pre-nome" name="nome" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                            <div id="pre-nome-error" class="text-red-500 text-sm mt-1 hidden">Este campo é obrigatório</div>
+                        </div>
+                        <div>
+                            <label for="pre-cpf" class="block text-sm font-medium text-gray-700 mb-2">CPF</label>
+                            <input type="text" id="pre-cpf" name="cpf" required placeholder="000.000.000-00" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                            <div id="pre-cpf-error" class="text-red-500 text-sm mt-1 hidden">CPF inválido</div>
+                        </div>
+                        <div>
+                            <label for="pre-email" class="block text-sm font-medium text-gray-700 mb-2">E-mail</label>
+                            <input type="email" id="pre-email" name="email" required placeholder="exemplo@dominio.com" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                            <div id="pre-email-error" class="text-red-500 text-sm mt-1 hidden">E-mail inválido</div>
+                        </div>
+                        <div class="pt-4">
+                            <button type="submit" class="w-full px-6 py-4 bg-blue-900 text-white rounded-lg hover:bg-blue-800 font-medium text-lg transition-all duration-300 hover:scale-105">
+                                Enviar Link
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+          </div>
+          </div>
+      </div><div id="formProfessores" class="hidden fade-in">
+        <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
+          <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Cadastro de Professores</h2>
+          <form onsubmit="submitForm(event, 'Professor cadastrado com sucesso!')"><div class="mb-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
+              <h3 class="text-lg font-semibold text-blue-800 mb-4">Tipo de Contratação</h3>
+              <div><label for="prof-tipo" class="block text-sm font-medium text-gray-700 mb-2">Selecione o tipo de contratação</label> <select id="prof-tipo" name="tipo" required onchange="toggleProfessorFields()" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"> <option value="pessoa-fisica">Pessoa Física (Servidor Efetivo/Substituto)</option> <option value="pessoa-juridica">Pessoa Jurídica (Prestação de Serviço)</option> </select>
+              </div>
+            </div><div class="mb-8">
+              <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">Dados Pessoais</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div><label for="prof-nome" class="block text-sm font-medium text-gray-700 mb-2">Nome Completo</label> <input type="text" id="prof-nome" name="nome" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                </div>
+                <div id="prof-cpf-field"><label for="prof-cpf" class="block text-sm font-medium text-gray-700 mb-2">CPF</label> <input type="text" id="prof-cpf" name="cpf" placeholder="000.000.000-00" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                  <div id="prof-cpf-error" class="text-red-500 text-sm mt-1 hidden">
+                    CPF deve conter 11 dígitos no formato 000.000.000-00
+                  </div>
+                </div>
+                <div id="prof-cnpj-field" class="hidden"><label for="prof-cnpj" class="block text-sm font-medium text-gray-700 mb-2">CNPJ</label> <input type="text" id="prof-cnpj" name="cnpj" placeholder="00.000.000/0000-00" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                  <div id="prof-cnpj-error" class="text-red-500 text-sm mt-1 hidden">
+                    CNPJ deve conter 14 dígitos no formato 00.000.000/0000-00
+                  </div>
+                </div>
+                <div id="prof-razao-field" class="hidden"><label for="prof-razao" class="block text-sm font-medium text-gray-700 mb-2">Razão Social</label> <input type="text" id="prof-razao" name="razao" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                </div>
+                <div id="prof-ie-field" class="hidden"><label for="prof-ie" class="block text-sm font-medium text-gray-700 mb-2">Inscrição Estadual (quando aplicável)</label> <input type="text" id="prof-ie" name="ie" placeholder="Opcional" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                </div>
+                <div id="prof-nascimento-field"><label for="prof-nascimento" class="block text-sm font-medium text-gray-700 mb-2">Data de Nascimento</label> <input type="date" id="prof-nascimento" name="nascimento" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                  <div id="prof-nascimento-error" class="text-red-500 text-sm mt-1 hidden">
+                    Data de nascimento inválida
+                  </div>
+                </div>
+                <div id="prof-genero-field"><label for="prof-genero" class="block text-sm font-medium text-gray-700 mb-2">Gênero</label> <select id="prof-genero" name="genero" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"> <option value="">Selecione</option> <option value="masculino">Masculino</option> <option value="feminino">Feminino</option> <option value="outro">Outro</option> <option value="nao-informar">Prefiro não informar</option> </select>
+                </div>
+                <div id="prof-nacionalidade-field"><label for="prof-nacionalidade" class="block text-sm font-medium text-gray-700 mb-2">Nacionalidade</label> <select id="prof-nacionalidade" name="nacionalidade" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"> <option value="">Selecione</option> <option value="brasileira">Brasileira</option> <option value="naturalizado">Brasileiro Naturalizado</option> <option value="estrangeira">Estrangeira</option> </select>
+                </div>
+                <div id="prof-estado-civil-field"><label for="prof-estado-civil" class="block text-sm font-medium text-gray-700 mb-2">Estado Civil</label> <select id="prof-estado-civil" name="estado_civil" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"> <option value="">Selecione</option> <option value="solteiro">Solteiro(a)</option> <option value="casado">Casado(a)</option> <option value="divorciado">Divorciado(a)</option> <option value="viuvo">Viúvo(a)</option> <option value="uniao-estavel">União Estável</option> </select>
+                </div>
+              </div>
+            </div><div class="mb-8">
+              <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">Dados de Contato</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div><label for="prof-email" class="block text-sm font-medium text-gray-700 mb-2">E-mail</label> <input type="email" id="prof-email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                  <div id="prof-email-error" class="text-red-500 text-sm mt-1 hidden">
+                    E-mail deve ter um formato válido (exemplo@dominio.com)
+                  </div>
+                </div>
+                <div><label for="prof-telefone" class="block text-sm font-medium text-gray-700 mb-2">Telefone Principal</label> <input type="tel" id="prof-telefone" name="telefone" required placeholder="(00) 00000-0000" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                  <div id="prof-telefone-error" class="text-red-500 text-sm mt-1 hidden">
+                    Telefone deve ter 10 ou 11 dígitos no formato (00) 0000-0000 ou (00) 00000-0000
+                  </div>
+                </div>
+                <div><label for="prof-telefone-alt" class="block text-sm font-medium text-gray-700 mb-2">Telefone Alternativo (opcional)</label> <input type="tel" id="prof-telefone-alt" name="telefone_alternativo" placeholder="(00) 00000-0000" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                  <div id="prof-telefone-alt-error" class="text-red-500 text-sm mt-1 hidden">
+                    Telefone deve ter 10 ou 11 dígitos no formato (00) 0000-0000 ou (00) 00000-0000
+                  </div>
+                </div>
+              </div>
+              <div class="mt-6"><label for="prof-endereco" class="block text-sm font-medium text-gray-700 mb-2">Endereço Completo</label> <textarea id="prof-endereco" name="endereco" required rows="3" placeholder="Rua, número, complemento, bairro, cidade, estado, CEP" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"></textarea>
+              </div>
+            </div><div class="mb-8">
+              <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">Dados Funcionais</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div id="prof-siape-field"><label for="prof-siape" class="block text-sm font-medium text-gray-700 mb-2">SIAPE (para servidores efetivos)</label> <input type="text" id="prof-siape" name="siape" placeholder="Número SIAPE" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                  <div id="prof-siape-error" class="text-red-500 text-sm mt-1 hidden">
+                    SIAPE deve conter apenas números
+                  </div>
+                </div>
+                <div><label for="prof-departamento" class="block text-sm font-medium text-gray-700 mb-2">Departamento</label> <select id="prof-departamento" name="departamento" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"> <option value="">Selecione o departamento</option> <option value="matematica">Departamento de Matemática</option> <option value="fisica">Departamento de Física</option> <option value="quimica">Departamento de Química</option> <option value="biologia">Departamento de Biologia</option> <option value="historia">Departamento de História</option> <option value="geografia">Departamento de Geografia</option> <option value="letras">Departamento de Letras</option> <option value="pedagogia">Departamento de Pedagogia</option> <option value="psicologia">Departamento de Psicologia</option> <option value="administracao">Departamento de Administração</option> <option value="direito">Departamento de Direito</option> <option value="engenharia">Departamento de Engenharia</option> <option value="medicina">Departamento de Medicina</option> <option value="enfermagem">Departamento de Enfermagem</option> <option value="computacao">Departamento de Ciência da Computação</option> <option value="outros">Outros</option> </select>
+                </div>
+                <div><label for="prof-titulacao" class="block text-sm font-medium text-gray-700 mb-2">Titulação</label> <select id="prof-titulacao" name="titulacao" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"> <option value="">Selecione</option> <option value="graduacao">Graduação</option> <option value="especializacao">Especialização</option> <option value="mestrado">Mestrado</option> <option value="doutorado">Doutorado</option> <option value="pos-doutorado">Pós-Doutorado</option> </select>
+                </div>
+                <div><label for="prof-area-atuacao" class="block text-sm font-medium text-gray-700 mb-2">Área de Atuação</label> <input type="text" id="prof-area-atuacao" name="area_atuacao" required placeholder="Ex: Álgebra Linear, História do Brasil, etc." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                </div>
+                <div><label for="prof-regime" class="block text-sm font-medium text-gray-700 mb-2">Regime de Trabalho</label> <select id="prof-regime" name="regime" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"> <option value="">Selecione</option> <option value="20h">20 horas semanais</option> <option value="40h">40 horas semanais</option> <option value="de">Dedicação Exclusiva (DE)</option> <option value="substituto">Professor Substituto</option> <option value="visitante">Professor Visitante</option> </select>
+                </div>
+              </div>
+            </div><div class="mb-8">
+              <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">Experiência e Observações</h3>
+              <div><label for="prof-experiencia" class="block text-sm font-medium text-gray-700 mb-2">Experiência Profissional e Acadêmica</label> <textarea id="prof-experiencia" name="experiencia" rows="4" placeholder="Descreva sua experiência acadêmica, profissional, publicações relevantes, projetos de pesquisa, etc." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"></textarea>
+              </div>
+            </div><div id="prof-contrato-field" class="mb-8 p-6 bg-orange-50 rounded-lg border border-orange-200 hidden">
+              <h3 class="text-lg font-semibold text-orange-800 mb-4">Documentação para Pessoa Jurídica</h3>
+              <div><label for="prof-contrato" class="block text-sm font-medium text-gray-700 mb-2">Contrato de Prestação de Serviço</label> <input type="file" id="prof-contrato" name="contrato" accept=".pdf,.doc,.docx" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                <p class="text-sm text-gray-500 mt-1">Anexe o contrato de prestação de serviço (PDF, DOC ou DOCX)</p>
+              </div>
+            </div>
+            <div class="mt-8 flex gap-4"><button type="button" onclick="showMenu()" class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"> Cancelar </button> <button type="submit" class="flex-1 px-6 py-3 bg-blue-900 text-white rounded-lg hover:bg-blue-800 font-medium"> Cadastrar Professor </button>
+            </div>
+          </form>
+        </div>
+      </div><div id="formFornecedores" class="hidden fade-in">
+        <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8">
+          <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Cadastro de Fornecedores</h2>
+          <form onsubmit="submitForm(event, 'Fornecedor cadastrado com sucesso!')">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div><label for="forn-razao-social" class="block text-sm font-medium text-gray-700 mb-2">Razão Social</label> <input type="text" id="forn-razao-social" name="razao_social" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+              </div>
+              <div><label for="forn-nome-fantasia" class="block text-sm font-medium text-gray-700 mb-2">Nome Fantasia</label> <input type="text" id="forn-nome-fantasia" name="nome_fantasia" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                <p class="text-sm text-gray-500 mt-1">Deixe em branco se for igual à razão social</p>
+              </div>
+              <div><label for="forn-cnpj" class="block text-sm font-medium text-gray-700 mb-2">CNPJ</label> <input type="text" id="forn-cnpj" name="cnpj" required placeholder="00.000.000/0000-00" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                <div id="forn-cnpj-error" class="text-red-500 text-sm mt-1 hidden">
+                  CNPJ deve conter 14 dígitos no formato 00.000.000/0000-00
+                </div>
+              </div>
+              <div><label for="forn-inscricao-estadual" class="block text-sm font-medium text-gray-700 mb-2">Inscrição Estadual</label> <input type="text" id="forn-inscricao-estadual" name="inscricao_estadual" placeholder="Número da IE ou 'ISENTO'" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                <p class="text-sm text-gray-500 mt-1">Digite "ISENTO" se não possuir IE</p>
+              </div>
+              <div><label for="forn-telefone" class="block text-sm font-medium text-gray-700 mb-2">Telefone</label> <input type="tel" id="forn-telefone" name="telefone" required placeholder="(00) 00000-0000" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                <div id="forn-telefone-error" class="text-red-500 text-sm mt-1 hidden">
+                  Telefone deve ter 10 ou 11 dígitos no formato (00) 0000-0000 ou (00) 00000-0000
+                </div>
+              </div>
+              <div><label for="forn-email" class="block text-sm font-medium text-gray-700 mb-2">E-mail de Contato</label> <input type="email" id="forn-email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                <div id="forn-email-error" class="text-red-500 text-sm mt-1 hidden">
+                  E-mail deve ter um formato válido (exemplo@dominio.com)
+                </div>
+              </div>
+            </div>
+            <div class="mt-6"><label for="forn-endereco" class="block text-sm font-medium text-gray-700 mb-2">Endereço Comercial</label> <textarea id="forn-endereco" name="endereco" required rows="3" placeholder="Rua, número, complemento, bairro, cidade, estado, CEP" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"></textarea>
+            </div>
+            <div class="mt-8 flex gap-4"><button type="button" onclick="showMenu()" class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"> Cancelar </button> <button type="submit" class="flex-1 px-6 py-3 bg-blue-900 text-white rounded-lg hover:bg-blue-800 font-medium"> Cadastrar Fornecedor </button>
+            </div>
+          </form>
+        </div>
+      </div><div id="formAlunos" class="hidden fade-in">
+        <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8">
+          <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Cadastro de Alunos</h2>
+          <form onsubmit="submitForm(event, 'Aluno cadastrado com sucesso!')">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div><label for="aluno-nome" class="block text-sm font-medium text-gray-700 mb-2">Nome Completo</label> <input type="text" id="aluno-nome" name="nome" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+              </div>
+              <div><label for="aluno-cpf" class="block text-sm font-medium text-gray-700 mb-2">CPF</label> <input type="text" id="aluno-cpf" name="cpf" required placeholder="000.000.000-00" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                <div id="aluno-cpf-error" class="text-red-500 text-sm mt-1 hidden">
+                  CPF deve conter 11 dígitos no formato 000.000.000-00
+                </div>
+              </div>
+              <div><label for="aluno-email" class="block text-sm font-medium text-gray-700 mb-2">E-mail</label> <input type="email" id="aluno-email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                <div id="aluno-email-error" class="text-red-500 text-sm mt-1 hidden">
+                  E-mail deve ter um formato válido (exemplo@dominio.com)
+                </div>
+              </div>
+              <div><label for="aluno-telefone" class="block text-sm font-medium text-gray-700 mb-2">Telefone</label> <input type="tel" id="aluno-telefone" name="telefone" required placeholder="(00) 00000-0000" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                <div id="aluno-telefone-error" class="text-red-500 text-sm mt-1 hidden">
+                  Telefone deve ter 10 ou 11 dígitos no formato (00) 0000-0000 ou (00) 00000-0000
+                </div>
+              </div>
+              <div><label for="aluno-nascimento" class="block text-sm font-medium text-gray-700 mb-2">Data de Nascimento</label> <input type="date" id="aluno-nascimento" name="nascimento" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+              </div>
+              <div><label for="aluno-curso" class="block text-sm font-medium text-gray-700 mb-2">Curso</label> <select id="aluno-curso" name="curso" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"> <option value="">Selecione o curso</option> <option value="administracao">Administração</option> <option value="engenharia">Engenharia</option> <option value="direito">Direito</option> <option value="medicina">Medicina</option> <option value="pedagogia">Pedagogia</option> <option value="psicologia">Psicologia</option> <option value="ciencia-computacao">Ciência da Computação</option> <option value="outros">Outros</option> </select>
+              </div>
+              <div><label for="aluno-periodo" class="block text-sm font-medium text-gray-700 mb-2">Período</label> <select id="aluno-periodo" name="periodo" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"> <option value="">Selecione</option> <option value="1">1º Período</option> <option value="2">2º Período</option> <option value="3">3º Período</option> <option value="4">4º Período</option> <option value="5">5º Período</option> <option value="6">6º Período</option> <option value="7">7º Período</option> <option value="8">8º Período</option> <option value="9">9º Período</option> <option value="10">10º Período</option> </select>
+              </div>
+              <div><label for="aluno-turno" class="block text-sm font-medium text-gray-700 mb-2">Turno</label> <select id="aluno-turno" name="turno" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"> <option value="">Selecione</option> <option value="matutino">Matutino</option> <option value="vespertino">Vespertino</option> <option value="noturno">Noturno</option> <option value="integral">Integral</option> </select>
+              </div>
+              <div><label for="aluno-responsavel" class="block text-sm font-medium text-gray-700 mb-2">Responsável Financeiro</label> <input type="text" id="aluno-responsavel" name="responsavel" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+              </div>
+              <div><label for="aluno-bolsa" class="block text-sm font-medium text-gray-700 mb-2">Deseja Avaliação de Bolsa?</label> <select id="aluno-bolsa" name="bolsa" onchange="toggleBolsaFields()" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"> <option value="nao">Não</option> <option value="sim">Sim</option> </select>
+              </div>
+            </div><div id="bolsa-fields" class="hidden mt-6 p-6 bg-blue-50 rounded-lg border border-blue-200">
+              <h3 class="text-lg font-semibold text-blue-800 mb-4">Informações para Avaliação de Bolsa</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div><label for="aluno-renda-familiar" class="block text-sm font-medium text-gray-700 mb-2">Renda Familiar Mensal (R$)</label> <input type="number" id="aluno-renda-familiar" name="renda_familiar" min="0" step="0.01" placeholder="0,00" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                </div>
+                <div><label for="aluno-pessoas-familia" class="block text-sm font-medium text-gray-700 mb-2">Número de Pessoas na Família</label> <input type="number" id="aluno-pessoas-familia" name="pessoas_familia" min="1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent">
+                </div>
+                <div><label for="aluno-tipo-bolsa" class="block text-sm font-medium text-gray-700 mb-2">Tipo de Bolsa Desejada</label> <select id="aluno-tipo-bolsa" name="tipo_bolsa" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"> <option value="">Selecione</option> <option value="integral">Bolsa Integral (100%)</option> <option value="parcial-50">Bolsa Parcial (50%)</option> <option value="parcial-25">Bolsa Parcial (25%)</option> <option value="qualquer">Qualquer percentual disponível</option> </select>
+                </div>
+                <div><label for="aluno-trabalha" class="block text-sm font-medium text-gray-700 mb-2">Trabalha Atualmente?</label> <select id="aluno-trabalha" name="trabalha" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"> <option value="nao">Não</option> <option value="sim">Sim</option> <option value="estagio">Estágio</option> </select>
+                </div>
+              </div>
+              <div class="mt-4"><label for="aluno-justificativa-bolsa" class="block text-sm font-medium text-gray-700 mb-2">Justificativa para Solicitação da Bolsa</label> <textarea id="aluno-justificativa-bolsa" name="justificativa_bolsa" rows="4" placeholder="Descreva sua situação socioeconômica e por que necessita da bolsa de estudos..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"></textarea>
+              </div>
+            </div>
+            <div class="mt-6"><label for="aluno-endereco" class="block text-sm font-medium text-gray-700 mb-2">Endereço Residencial</label> <textarea id="aluno-endereco" name="endereco" required rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"></textarea>
+            </div>
+            <div class="mt-8 flex gap-4"><button type="button" onclick="showMenu()" class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"> Cancelar </button> <button type="submit" class="flex-1 px-6 py-3 bg-blue-900 text-white rounded-lg hover:bg-blue-800 font-medium"> Cadastrar Aluno </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script>
+        // Variáveis globais
+        let allCadastros = [];
+        let filteredCadastros = [];
+        let isLoading = false;
+
+        // Configuração padrão
+        const defaultConfig = {
+            sistema_titulo: "Sistema de Cadastros Acadêmicos",
+            admin_nome: "Administrador"
+        };
+
+        // Data Handler para o SDK
+        const dataHandler = {
+            onDataChanged(data) {
+                allCadastros = data;
+                filteredCadastros = [...data];
+                updateDashboard();
+                renderCadastrosList();
+            }
+        };
+
+        // Inicialização dos SDKs
+        async function initSDKs() {
+            try {
+                // Inicializar Data SDK
+                if (window.dataSdk) {
+                    const initResult = await window.dataSdk.init(dataHandler);
+                    if (!initResult.isOk) {
+                        console.error("Erro ao inicializar Data SDK:", initResult.error);
+                    }
+                }
+
+                // Inicializar Element SDK
+                if (window.elementSdk) {
+                    window.elementSdk.init({
+                        defaultConfig,
+                        onConfigChange: async (config) => {
+                            // Atualizar título do sistema
+                            const titleElement = document.querySelector('h1');
+                            if (titleElement) {
+                                titleElement.textContent = config.sistema_titulo || defaultConfig.sistema_titulo;
+                            }
+                        },
+                        mapToCapabilities: (config) => ({
+                            recolorables: [],
+                            borderables: [],
+                            fontEditable: undefined,
+                            fontSizeable: undefined
+                        }),
+                        mapToEditPanelValues: (config) => new Map([
+                            ["sistema_titulo", config.sistema_titulo || defaultConfig.sistema_titulo],
+                            ["admin_nome", config.admin_nome || defaultConfig.admin_nome]
+                        ])
+                    });
+                }
+            } catch (error) {
+                console.error("Erro na inicialização dos SDKs:", error);
+            }
+        }
+
+        function showForm(formType) {
+            // Esconder menu principal e dashboard
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('dashboardAdmin').classList.add('hidden');
+            
+            // Esconder todos os formulários
+            const forms = ['formProfessores', 'formFornecedores', 'formAlunos'];
+            forms.forEach(form => {
+                document.getElementById(form).classList.add('hidden');
+            });
+            
+            // Mostrar formulário específico
+            document.getElementById('form' + formType.charAt(0).toUpperCase() + formType.slice(1)).classList.remove('hidden');
+        }
+
+        function showDashboard() {
+            // Esconder menu principal e formulários
+            document.getElementById('mainMenu').classList.add('hidden');
+            const forms = ['formProfessores', 'formFornecedores', 'formAlunos'];
+            forms.forEach(form => {
+                document.getElementById(form).classList.add('hidden');
+            });
+            
+            // Mostrar dashboard
+            document.getElementById('dashboardAdmin').classList.remove('hidden');
+
+            // Garantir que a aba padrão (gerenciar) esteja ativa
+            switchTab('gerenciar');
+            
+            // Atualizar dados
+            updateDashboard();
+            renderCadastrosList();
+        }
+
+        function showMenu() {
+            // Esconder todos os formulários e dashboard
+            const forms = ['formProfessores', 'formFornecedores', 'formAlunos'];
+            forms.forEach(form => {
+                document.getElementById(form).classList.add('hidden');
+            });
+            document.getElementById('dashboardAdmin').classList.add('hidden');
+            
+            // Mostrar menu principal
+            document.getElementById('mainMenu').classList.remove('hidden');
+            
+            // Esconder mensagem de sucesso se estiver visível
+            document.getElementById('successMessage').classList.add('hidden');
+        }
+
+        async function submitForm(event, message) {
+            event.preventDefault();
+            
+            if (isLoading) return;
+            
+            // Validar formulário antes de enviar
+            const formId = event.target.closest('[id]').id;
+            if (!validateForm(formId)) {
+                return;
+            }
+
+            isLoading = true;
+            const submitButton = event.target.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Salvando...';
+            submitButton.disabled = true;
+
+            try {
+                // Coletar dados do formulário
+                const formData = new FormData(event.target);
+                const dados = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    dados[key] = value;
+                }
+
+                // Determinar tipo baseado no formulário
+                let tipo = '';
+                if (formId === 'formProfessores') tipo = 'professor';
+                else if (formId === 'formAlunos') tipo = 'aluno';
+                else if (formId === 'formFornecedores') tipo = 'fornecedor';
+
+                // Verificar duplicatas para alunos
+                if (tipo === 'aluno') {
+                    const cpfExistente = allCadastros.find(c => 
+                        c.tipo === 'aluno' && 
+                        JSON.parse(c.dados_completos).cpf === dados.cpf
+                    );
+                    
+                    const emailExistente = allCadastros.find(c => 
+                        c.tipo === 'aluno' && 
+                        c.email === dados.email
+                    );
+
+                    if (cpfExistente || emailExistente) {
+                        showDuplicateStudentAlert(cpfExistente, emailExistente);
+                        return;
+                    }
+                }
+
+                // Criar objeto para salvar
+                const cadastro = {
+                    id: Date.now().toString(),
+                    tipo: tipo,
+                    nome: dados.nome || dados.razao_social || dados.empresa || dados.contato, // Ajustado para pegar nome do fornecedor
+                    email: dados.email,
+                    telefone: dados.telefone,
+                    status: 'pendente',
+                    data_cadastro: new Date().toISOString(),
+                    dados_completos: JSON.stringify(dados)
+                };
+
+                // Verificar limite
+                if (allCadastros.length >= 999) {
+                    showInlineMessage('Limite máximo de 999 cadastros atingido. Exclua alguns cadastros primeiro.', 'error');
+                    return;
+                }
+
+                // Salvar no Data SDK
+                if (window.dataSdk) {
+                    const result = await window.dataSdk.create(cadastro);
+                    if (result.isOk) {
+                        // Mostrar mensagem de sucesso
+                        document.getElementById('successText').textContent = message;
+                        document.getElementById('successMessage').classList.remove('hidden');
+                        
+                        // Limpar formulário
+                        event.target.reset();
+                        
+                        // Limpar erros
+                        const errorElements = event.target.querySelectorAll('[id$="-error"]');
+                        errorElements.forEach(error => error.classList.add('hidden'));
+                        
+                        // Resetar campos específicos do professor se necessário
+                        if (formId === 'formProfessores') {
+                            toggleProfessorFields(); // Reseta para o estado inicial
+                        }
+                        
+                        // Resetar campos específicos do aluno se necessário
+                        if (formId === 'formAlunos') {
+                            document.getElementById('bolsa-fields').classList.add('hidden');
+                            document.getElementById('aluno-bolsa').value = 'nao';
+                        }
+                        
+                        // Voltar ao menu após 2 segundos
+                        setTimeout(() => {
+                            showMenu();
+                        }, 2000);
+                    } else {
+                        showInlineMessage('Erro ao salvar cadastro. Tente novamente.', 'error');
+                    }
+                }
+            } catch (error) {
+                showInlineMessage('Erro ao processar cadastro. Tente novamente.', 'error');
+            } finally {
+                isLoading = false;
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        }
+
+        function showInlineMessage(message, type = 'info') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `fixed top-24 right-4 p-4 rounded-lg shadow-lg z-50 ${
+                type === 'error' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
+            }`; // Ajustado para top-24 para não ficar atrás do header
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+
+        function updateDashboard() {
+            // Contar por tipo
+            const counts = {
+                professor: 0,
+                aluno: 0,
+                fornecedor: 0
+            };
+
+            allCadastros.forEach(cadastro => {
+                if (counts.hasOwnProperty(cadastro.tipo)) {
+                    counts[cadastro.tipo]++;
+                }
+            });
+
+            // Atualizar contadores
+            document.getElementById('count-professores').textContent = counts.professor;
+            document.getElementById('count-alunos').textContent = counts.aluno;
+            document.getElementById('count-fornecedores').textContent = counts.fornecedor;
+        }
+
+        function renderCadastrosList() {
+            const tbody = document.getElementById('cadastros-list');
+            const emptyState = document.getElementById('empty-state');
+            
+            if (filteredCadastros.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            
+            tbody.innerHTML = filteredCadastros.map(cadastro => {
+                const data = new Date(cadastro.data_cadastro).toLocaleDateString('pt-BR');
+                const statusClass = {
+                    'pendente': 'bg-yellow-100 text-yellow-800',
+                    'aprovado': 'bg-green-100 text-green-800',
+                    'atualizar': 'bg-red-100 text-red-800'
+                };
+
+                return `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${cadastro.nome}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">${cadastro.tipo}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cadastro.email}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass[cadastro.status] || 'bg-gray-100 text-gray-800'}">
+                                ${cadastro.status === 'pendente' ? 'Pendente' : 
+                                  cadastro.status === 'aprovado' ? 'Aprovado' : 
+                                  cadastro.status === 'atualizar' ? 'Atualizar' : cadastro.status}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${data}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex gap-2">
+                                ${cadastro.status === 'pendente' ? `
+                                    <button onclick="updateStatus('${cadastro.__backendId}', 'aprovado')" class="text-green-600 hover:text-green-900 font-medium">
+                                        Aprovar
+                                    </button>
+                                    <button onclick="updateStatus('${cadastro.__backendId}', 'atualizar')" class="text-yellow-600 hover:text-yellow-900 font-medium">
+                                        Solicitar Atualização
+                                    </button>
+                                ` : ''}
+                                <button onclick="viewDetails('${cadastro.__backendId}')" class="text-blue-600 hover:text-blue-900 font-medium">
+                                    Ver Detalhes
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function updateStatus(backendId, newStatus) {
+            if (isLoading) return;
+            
+            const cadastro = allCadastros.find(c => c.__backendId === backendId);
+            if (!cadastro) return;
+
+            isLoading = true;
+            
+            try {
+                const updatedCadastro = { ...cadastro, status: newStatus };
+                
+                if (window.dataSdk) {
+                    const result = await window.dataSdk.update(updatedCadastro);
+                    if (result.isOk) {
+                        showInlineMessage(`Status atualizado para ${newStatus === 'aprovado' ? 'aprovado' : 'solicitar atualização'}!`, 'success');
+                    } else {
+                        showInlineMessage('Erro ao atualizar status. Tente novamente.', 'error');
+                    }
+                }
+            } catch (error) {
+                showInlineMessage('Erro ao atualizar status. Tente novamente.', 'error');
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        function showDuplicateStudentAlert(cpfExistente, emailExistente) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            
+            let mensagem = '';
+            if (cpfExistente && emailExistente) {
+                mensagem = 'Este CPF e e-mail já estão cadastrados no sistema.';
+            } else if (cpfExistente) {
+                mensagem = 'Este CPF já está cadastrado no sistema.';
+            } else if (emailExistente) {
+                mensagem = 'Este e-mail já está cadastrado no sistema.';
+            }
+            
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg max-w-md w-full p-6 shadow-2xl">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900">Aluno já cadastrado</h3>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <p class="text-gray-700 mb-4">${mensagem}</p>
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <div>
+                                    <p class="text-blue-800 font-medium mb-1">Sugestão:</p>
+                                    <p class="text-blue-700 text-sm">Se você já possui cadastro, faça login no sistema para acessar suas informações ou solicite a recuperação de senha.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-3">
+                        <button onclick="this.closest('.fixed').remove()" class="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium">
+                            Fechar
+                        </button>
+                        <button onclick="this.closest('.fixed').remove(); showLoginSuggestion();" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                            Fazer Login
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Reset loading state
+            isLoading = false;
+            const submitButton = document.querySelector('#formAlunos button[type="submit"]');
+            if (submitButton) {
+                submitButton.textContent = 'Cadastrar Aluno';
+                submitButton.disabled = false;
+            }
+        }
+
+        function showLoginSuggestion() {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg max-w-md w-full p-6 shadow-2xl">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Área de Login</h3>
+                        <p class="text-gray-600">Para acessar sua conta existente, entre em contato com a administração do sistema.</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                        <h4 class="font-medium text-gray-900 mb-2">Como proceder:</h4>
+                        <ul class="text-sm text-gray-700 space-y-1">
+                            <li>• Entre em contato com a secretaria</li>
+                            <li>• Informe seu CPF ou e-mail cadastrado</li>
+                            <li>• Solicite acesso ao seu cadastro</li>
+                            <li>• Atualize suas informações se necessário</li>
+                        </ul>
+                    </div>
+                    
+                    <button onclick="this.closest('.fixed').remove()" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                        Entendi
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function viewDetails(backendId) {
+            const cadastro = allCadastros.find(c => c.__backendId === backendId);
+            if (!cadastro) return;
+
+            const dados = JSON.parse(cadastro.dados_completos);
+            
+            // Criar modal simples
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Detalhes do Cadastro</h3>
+                        <button onclick="this.closest('.fixed').remove()" class="text-gray-500 hover:text-gray-700">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="space-y-3">
+                        ${Object.entries(dados).map(([key, value]) => `
+                            <div class="py-2 border-b border-gray-100">
+                                <strong class="capitalize text-sm text-gray-600">${key.replace(/[-_]/g, ' ')}:</strong>
+                                <span class="ml-2 text-gray-900">${value || 'Não informado'}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function applyFilters() {
+            const tipoFilter = document.getElementById('filter-tipo').value;
+            const statusFilter = document.getElementById('filter-status').value;
+            const searchFilter = document.getElementById('filter-search').value.toLowerCase();
+
+            filteredCadastros = allCadastros.filter(cadastro => {
+                const matchTipo = !tipoFilter || cadastro.tipo === tipoFilter;
+                const matchStatus = !statusFilter || cadastro.status === statusFilter;
+                const matchSearch = !searchFilter || 
+                    cadastro.nome.toLowerCase().includes(searchFilter) ||
+                    cadastro.email.toLowerCase().includes(searchFilter);
+
+                return matchTipo && matchStatus && matchSearch;
+            });
+
+            renderCadastrosList();
+        }
+
+        function clearFilters() {
+            document.getElementById('filter-tipo').value = '';
+            document.getElementById('filter-status').value = '';
+            document.getElementById('filter-search').value = '';
+            filteredCadastros = [...allCadastros];
+            renderCadastrosList();
+        }
+
+        // Event listener para o botão home
+        document.getElementById('homeBtn').addEventListener('click', showMenu);
+
+        // Inicializar sistema quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            initSDKs();
+            // Define o estado inicial dos campos de professor
+            toggleProfessorFields();
+        });
+
+        // Função para alternar campos de bolsa
+        function toggleBolsaFields() {
+            const bolsa = document.getElementById('aluno-bolsa').value;
+            const bolsaFields = document.getElementById('bolsa-fields');
+            
+            if (bolsa === 'sim') {
+                bolsaFields.classList.remove('hidden');
+                // Tornar campos obrigatórios quando bolsa é solicitada
+                document.getElementById('aluno-renda-familiar').required = true;
+                document.getElementById('aluno-pessoas-familia').required = true;
+                document.getElementById('aluno-tipo-bolsa').required = true;
+                document.getElementById('aluno-justificativa-bolsa').required = true;
+            } else {
+                bolsaFields.classList.add('hidden');
+                // Remover obrigatoriedade quando bolsa não é solicitada
+                document.getElementById('aluno-renda-familiar').required = false;
+                document.getElementById('aluno-pessoas-familia').required = false;
+                document.getElementById('aluno-tipo-bolsa').required = false;
+                document.getElementById('aluno-justificativa-bolsa').required = false;
+            }
+        }
+
+        // Função para alternar campos do professor
+        function toggleProfessorFields() {
+            const tipo = document.getElementById('prof-tipo').value;
+            const cpfField = document.getElementById('prof-cpf-field');
+            const cnpjField = document.getElementById('prof-cnpj-field');
+            const razaoField = document.getElementById('prof-razao-field');
+            const ieField = document.getElementById('prof-ie-field');
+            const contratoField = document.getElementById('prof-contrato-field');
+            const siapeField = document.getElementById('prof-siape-field');
+            const nascimentoField = document.getElementById('prof-nascimento-field');
+            const generoField = document.getElementById('prof-genero-field');
+            const nacionalidadeField = document.getElementById('prof-nacionalidade-field');
+            const estadoCivilField = document.getElementById('prof-estado-civil-field');
+            
+            if (tipo === 'pessoa-fisica') {
+                // Mostrar campos de pessoa física
+                cpfField.classList.remove('hidden');
+                nascimentoField.classList.remove('hidden');
+                generoField.classList.remove('hidden');
+                nacionalidadeField.classList.remove('hidden');
+                estadoCivilField.classList.remove('hidden');
+                siapeField.classList.remove('hidden');
+                
+                // Esconder campos de pessoa jurídica
+                cnpjField.classList.add('hidden');
+                razaoField.classList.add('hidden');
+                ieField.classList.add('hidden');
+                contratoField.classList.add('hidden');
+                
+                // Definir campos obrigatórios
+                document.getElementById('prof-cpf').required = true;
+                document.getElementById('prof-nascimento').required = true;
+                document.getElementById('prof-genero').required = true;
+                document.getElementById('prof-nacionalidade').required = true;
+                document.getElementById('prof-estado-civil').required = true;
+                
+                // Remover obrigatoriedade de campos PJ
+                document.getElementById('prof-cnpj').required = false;
+                document.getElementById('prof-razao').required = false;
+                
+            } else if (tipo === 'pessoa-juridica') {
+                // Esconder campos de pessoa física
+                cpfField.classList.add('hidden');
+                nascimentoField.classList.add('hidden');
+                generoField.classList.add('hidden');
+                nacionalidadeField.classList.add('hidden');
+                estadoCivilField.classList.add('hidden');
+                siapeField.classList.add('hidden');
+                
+                // Mostrar campos de pessoa jurídica
+                cnpjField.classList.remove('hidden');
+                razaoField.classList.remove('hidden');
+                ieField.classList.remove('hidden');
+                contratoField.classList.remove('hidden');
+                
+                // Definir campos obrigatórios
+                document.getElementById('prof-cnpj').required = true;
+                document.getElementById('prof-razao').required = true;
+                
+                // Remover obrigatoriedade de campos PF
+                document.getElementById('prof-cpf').required = false;
+                document.getElementById('prof-nascimento').required = false;
+                document.getElementById('prof-genero').required = false;
+                document.getElementById('prof-nacionalidade').required = false;
+                document.getElementById('prof-estado-civil').required = false;
+            }
+        }
+
+        // Funções de validação
+        function validateCPF(cpf) {
+            const cleanCPF = cpf.replace(/\D/g, '');
+            return cleanCPF.length === 11;
+        }
+
+        function validateCNPJ(cnpj) {
+            const cleanCNPJ = cnpj.replace(/\D/g, '');
+            return cleanCNPJ.length === 14;
+        }
+
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function validatePhone(phone) {
+            const cleanPhone = phone.replace(/\D/g, '');
+            return cleanPhone.length === 10 || cleanPhone.length === 11;
+        }
+
+        function showError(fieldId, show) {
+            const errorElement = document.getElementById(fieldId + '-error');
+            if (errorElement) {
+                if (show) {
+                    errorElement.classList.remove('hidden');
+                } else {
+                    errorElement.classList.add('hidden');
+                }
+            }
+        }
+
+        function validateForm(formId) {
+            let isValid = true;
+            const form = document.getElementById(formId);
+            let firstErrorField = null;
+            
+            // Limpar todas as mensagens de erro primeiro
+            const errorElements = form.querySelectorAll('[id$="-error"]');
+            errorElements.forEach(error => error.classList.add('hidden'));
+            
+            // Validar campos obrigatórios
+            const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
+            requiredFields.forEach(field => {
+                // Só valida se o campo não estiver dentro de um elemento escondido
+                if (!field.value.trim() && !field.closest('.hidden')) {
+                    showFieldError(field, 'Este campo é obrigatório');
+                    if (!firstErrorField) firstErrorField = field;
+                    isValid = false;
+                }
+            });
+            
+            // Validar CPF
+            const cpfInput = form.querySelector('input[name="cpf"]');
+            if (cpfInput && cpfInput.value && !cpfInput.closest('.hidden')) {
+                const cpfValid = validateCPF(cpfInput.value);
+                if (!cpfValid) {
+                    showFieldError(cpfInput, 'CPF inválido. Use o formato 000.000.000-00');
+                    if (!firstErrorField) firstErrorField = cpfInput;
+                    isValid = false;
+                }
+            }
+            
+            // Validar CNPJ
+            const cnpjInput = form.querySelector('input[name="cnpj"]');
+            if (cnpjInput && cnpjInput.value && !cnpjInput.closest('.hidden')) {
+                const cnpjValid = validateCNPJ(cnpjInput.value);
+                if (!cnpjValid) {
+                    showFieldError(cnpjInput, 'CNPJ inválido. Use o formato 00.000.000/0000-00');
+                    if (!firstErrorField) firstErrorField = cnpjInput;
+                    isValid = false;
+                }
+            }
+            
+            // Validar Email
+            const emailInput = form.querySelector('input[name="email"]');
+            if (emailInput && emailInput.value) {
+                const emailValid = validateEmail(emailInput.value);
+                if (!emailValid) {
+                    showFieldError(emailInput, 'E-mail inválido. Use o formato exemplo@dominio.com');
+                    if (!firstErrorField) firstErrorField = emailInput;
+                    isValid = false;
+                }
+            }
+            
+            // Validar Telefone
+            const phoneInput = form.querySelector('input[name="telefone"]');
+            if (phoneInput && phoneInput.value) {
+                const phoneValid = validatePhone(phoneInput.value);
+                if (!phoneValid) {
+                    showFieldError(phoneInput, 'Telefone inválido. Use o formato (00) 0000-0000 ou (00) 00000-0000');
+                    if (!firstErrorField) firstErrorField = phoneInput;
+                    isValid = false;
+                }
+            }
+            
+            // Validar data de nascimento (não pode ser futura)
+            const nascimentoInput = form.querySelector('input[name="nascimento"]');
+            if (nascimentoInput && nascimentoInput.value) {
+                const nascimento = new Date(nascimentoInput.value);
+                const hoje = new Date();
+                // Ajuste para considerar fuso horário
+                nascimento.setMinutes(nascimento.getMinutes() + nascimento.getTimezoneOffset());
+                hoje.setHours(0, 0, 0, 0);
+
+                const idade = hoje.getFullYear() - nascimento.getFullYear();
+                const m = hoje.getMonth() - nascimento.getMonth();
+                let idadeAnos = idade;
+                if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
+                    idadeAnos--;
+                }
+
+                if (nascimento > hoje) {
+                    showFieldError(nascimentoInput, 'Data de nascimento não pode ser no futuro');
+                    if (!firstErrorField) firstErrorField = nascimentoInput;
+                    isValid = false;
+                } else if (formId === 'formProfessores' && idadeAnos < 18) {
+                    showFieldError(nascimentoInput, 'Idade mínima para professor é 18 anos');
+                    if (!firstErrorField) firstErrorField = nascimentoInput;
+                    isValid = false;
+                } else if (formId === 'formAlunos' && idadeAnos < 16) {
+                    showFieldError(nascimentoInput, 'Idade mínima para cadastro é 16 anos');
+                    if (!firstErrorField) firstErrorField = nascimentoInput;
+                    isValid = false;
+                } else if (idadeAnos > 120) {
+                    showFieldError(nascimentoInput, 'Data de nascimento inválida');
+                    if (!firstErrorField) firstErrorField = nascimentoInput;
+                    isValid = false;
+                }
+            }
+            
+            // Validar SIAPE (apenas para professores)
+            const siapeInput = form.querySelector('input[name="siape"]');
+            if (siapeInput && siapeInput.value && !siapeInput.closest('.hidden')) {
+                if (!/^\d+$/.test(siapeInput.value)) {
+                    showFieldError(siapeInput, 'SIAPE deve conter apenas números');
+                    if (!firstErrorField) firstErrorField = siapeInput;
+                    isValid = false;
+                } else if (siapeInput.value.length < 7) {
+                    showFieldError(siapeInput, 'SIAPE deve ter pelo menos 7 dígitos');
+                    if (!firstErrorField) firstErrorField = siapeInput;
+                    isValid = false;
+                }
+            }
+            
+            // Validar renda familiar (se bolsa solicitada)
+            const bolsaSelect = form.querySelector('select[name="bolsa"]');
+            if (bolsaSelect && bolsaSelect.value === 'sim') {
+                const rendaInput = form.querySelector('input[name="renda_familiar"]');
+                if (rendaInput && (!rendaInput.value || parseFloat(rendaInput.value) < 0)) {
+                    showFieldError(rendaInput, 'Informe uma renda familiar válida');
+                    if (!firstErrorField) firstErrorField = rendaInput;
+                    isValid = false;
+                }
+                
+                const pessoasInput = form.querySelector('input[name="pessoas_familia"]');
+                if (pessoasInput && (!pessoasInput.value || parseInt(pessoasInput.value) < 1)) {
+                    showFieldError(pessoasInput, 'Informe um número válido de pessoas na família');
+                    if (!firstErrorField) firstErrorField = pessoasInput;
+                    isValid = false;
+                }
+            }
+            
+            // Se houver erros, focar no primeiro campo com erro e mostrar mensagem geral
+            if (!isValid) {
+                if (firstErrorField) {
+                    firstErrorField.focus();
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                
+                showInlineMessage('Por favor, corrija os erros destacados em vermelho antes de continuar.', 'error');
+            }
+            
+            return isValid;
+        }
+
+        function showFieldError(field, message) {
+            // Adicionar borda vermelha ao campo
+            field.classList.add('border-red-500', 'focus:ring-red-500');
+            field.classList.remove('border-gray-300', 'focus:ring-blue-900');
+            
+            // Mostrar mensagem de erro específica
+            const errorId = field.id + '-error';
+            let errorElement = document.getElementById(errorId);
+            
+            if (!errorElement) {
+                // Criar elemento de erro se não existir
+                errorElement = document.createElement('div');
+                errorElement.id = errorId;
+                errorElement.className = 'text-red-500 text-sm mt-1';
+                // Insere depois do campo, ou do pai se for um select
+                field.parentNode.appendChild(errorElement);
+            }
+            
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+        }
+
+        function clearFieldError(field) {
+            // Remover borda vermelha
+            field.classList.remove('border-red-500', 'focus:ring-red-500');
+            field.classList.add('border-gray-300', 'focus:ring-blue-900');
+            
+            // Esconder mensagem de erro
+            const errorElement = document.getElementById(field.id + '-error');
+            if (errorElement) {
+                errorElement.classList.add('hidden');
+            }
+        }
+
+        // Máscaras para campos de entrada
+        document.addEventListener('DOMContentLoaded', function() {
+            // Máscara para CPF (agora pega todos os campos com name="cpf")
+            const cpfInputs = document.querySelectorAll('input[name="cpf"]');
+            cpfInputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    value = value.substring(0, 11); // Limita a 11 dígitos
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                    e.target.value = value;
+                    
+                    // Validar em tempo real
+                    if (value.length > 0) {
+                        if (!validateCPF(value)) {
+                            showFieldError(e.target, 'CPF inválido. Use 000.000.000-00');
+                        } else {
+                            clearFieldError(e.target);
+                        }
+                    } else {
+                        clearFieldError(e.target);
+                    }
+                });
+            });
+
+            // Máscara para CNPJ
+            const cnpjInputs = document.querySelectorAll('input[name="cnpj"]');
+            cnpjInputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    value = value.substring(0, 14); // Limita a 14 dígitos
+                    value = value.replace(/(\d{2})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d)/, '$1/$2');
+                    value = value.replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+                    e.target.value = value;
+                    
+                    // Validar em tempo real
+                     if (value.length > 0) {
+                        if (!validateCNPJ(value)) {
+                            showFieldError(e.target, 'CNPJ inválido. Use 00.000.000/0000-00');
+                        } else {
+                            clearFieldError(e.target);
+                        }
+                    } else {
+                        clearFieldError(e.target);
+                    }
+                });
+            });
+
+            // Máscara para telefone
+            const telefoneInputs = document.querySelectorAll('input[type="tel"]'); // Pega todos os inputs de telefone
+            telefoneInputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    value = value.substring(0, 11); // Limita a 11 dígitos
+                    if (value.length <= 10) {
+                        value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                        value = value.replace(/(\d{4})(\d)/, '$1-$2');
+                    } else {
+                        value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                        value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                    }
+                    e.target.value = value;
+                    
+                    // Validar em tempo real
+                    if (value.length > 0) {
+                         if (!validatePhone(value)) {
+                            showFieldError(e.target, 'Telefone inválido. Use (00) 00000-0000');
+                        } else {
+                            clearFieldError(e.target);
+                        }
+                    } else {
+                        clearFieldError(e.target);
+                    }
+                });
+            });
+
+            // Validação em tempo real para todos os campos
+            const allInputs = document.querySelectorAll('input, select, textarea');
+            allInputs.forEach(input => {
+                // Limpar erros quando o usuário começar a digitar
+                input.addEventListener('input', function(e) {
+                    if (e.target.classList.contains('border-red-500')) {
+                        clearFieldError(e.target);
+                    }
+                });
+
+                // Validação específica no blur (quando sai do campo)
+                input.addEventListener('blur', function(e) {
+                    const field = e.target;
+                    const value = field.value.trim();
+                    
+                    // Validar campos obrigatórios
+                    if (field.hasAttribute('required') && !value && !field.closest('.hidden')) {
+                        showFieldError(field, 'Este campo é obrigatório');
+                        return;
+                    }
+                });
+            });
+        });
+
+        // ============================================
+        // INÍCIO: NOVAS FUNÇÕES PARA ABAS
+        // ============================================
+
+        /**
+         * Alterna a visualização entre as abas do dashboard.
+         */
+        function switchTab(tabName) {
+            // Selecionar painéis
+            const panelGerenciar = document.getElementById('panel-gerenciar');
+            const panelPreCadastro = document.getElementById('panel-pre-cadastro');
+
+            // Selecionar botões
+            const tabGerenciar = document.getElementById('tab-gerenciar');
+            const tabPreCadastro = document.getElementById('tab-pre-cadastro');
+
+            // Classes de aba ativa e inativa
+            const activeClasses = ['border-blue-900', 'text-blue-900'];
+            const inactiveClasses = ['border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300'];
+
+            if (tabName === 'gerenciar') {
+                // Mostrar painel gerenciar
+                panelGerenciar.classList.remove('hidden');
+                panelPreCadastro.classList.add('hidden');
+
+                // Ativar tab gerenciar
+                tabGerenciar.classList.add(...activeClasses);
+                tabGerenciar.classList.remove(...inactiveClasses);
+
+                // Desativar tab pre-cadastro
+                tabPreCadastro.classList.add(...inactiveClasses);
+                tabPreCadastro.classList.remove(...activeClasses);
+
+            } else if (tabName === 'pre-cadastro') {
+                // Mostrar painel pre-cadastro
+                panelGerenciar.classList.add('hidden');
+                panelPreCadastro.classList.remove('hidden');
+
+                // Desativar tab gerenciar
+                tabGerenciar.classList.add(...inactiveClasses);
+                tabGerenciar.classList.remove(...activeClasses);
+
+                // Ativar tab pre-cadastro
+                tabPreCadastro.classList.add(...activeClasses);
+                tabPreCadastro.classList.remove(...inactiveClasses);
+            }
+        }
+
+        /**
+         * Função de placeholder para o envio do formulário de pré-cadastro.
+         */
+        function enviarLinkPreCadastro(event) {
+            event.preventDefault();
+            
+            // Validação simples (reutilizando as funções de validação existentes)
+            const nomeInput = document.getElementById('pre-nome');
+            const cpfInput = document.getElementById('pre-cpf');
+            const emailInput = document.getElementById('pre-email');
+
+            let formValido = true;
+
+            // Limpa erros anteriores
+            clearFieldError(nomeInput);
+            clearFieldError(cpfInput);
+            clearFieldError(emailInput);
+            
+            if (!nomeInput.value.trim()) {
+                showFieldError(nomeInput, 'Nome é obrigatório');
+                formValido = false;
+            }
+
+            if (!validateCPF(cpfInput.value)) {
+                showFieldError(cpfInput, 'CPF inválido. Use 000.000.000-00');
+                formValido = false;
+            }
+
+            if (!validateEmail(emailInput.value)) {
+                showFieldError(emailInput, 'E-mail inválido. Use exemplo@dominio.com');
+                formValido = false;
+            }
+
+
+            if (formValido) {
+                // Simular envio
+                console.log("Enviando link para:", { nome: nomeInput.value, cpf: cpfInput.value, email: emailInput.value });
+                
+                // Mostrar mensagem de sucesso (reutilizando a função existente)
+                showInlineMessage(`Link de pré-cadastro enviado para ${emailInput.value}!`, 'success');
+                
+                // Limpar formulário
+                document.getElementById('formPreCadastro').reset();
+            } else {
+                showInlineMessage('Por favor, corrija os erros no formulário.', 'error');
+            }
+        }
+        // ============================================
+        // FIM: NOVAS FUNÇÕES PARA ABAS
+        // ============================================
+
+    </script>
+</body>
+</html>
